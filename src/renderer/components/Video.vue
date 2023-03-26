@@ -48,8 +48,7 @@ import OpenDialog from "../api/OpenDialog";
 import connect from "../api/bus.js";
 import Mousetrap from "mousetrap";
 import path from "path";
-import "DPlayer/dist/DPlayer.min.css";
-import DPlayer from "DPlayer";
+import DPlayer from "xdplayer/dist/DPlayer.min.js";
 import { musicReg } from "../api/util";
 import { remote } from "electron";
 import fs from "fs";
@@ -153,7 +152,7 @@ export default {
       // 修改播放状态
       this.setPlaying(true);
       this.dp.play();
-      // 还原上一次的播放状态
+      // // 还原上一次的播放状态
       this.dp.speed(this.currentVideo.speed);
       this.dp.seek(this.currentVideo.currentTime);
     },
@@ -267,10 +266,13 @@ export default {
     },
     // 初始化dplayer播放器
     initDplayer() {
-      this.dp = new DPlayer({
-        container: document.getElementById("dplayer"),
-        hotkey: false
-      });
+      // this.dp = new DPlayer({
+      //   container: document.getElementById('dplayer'),
+      //   preload: 'none',
+      //   screenshot: true
+      // });
+      
+      this.initPlayers()
       this.dp.on("timeupdate", this.timeupdate);
       this.dp.on("durationchange", this.durationchange);
       this.dp.on("loadedmetadata", this.loadedmetadata);
@@ -278,6 +280,63 @@ export default {
       this.dp.on("error", this.error);
       this.dp.volume(this.volumePercent);
     },
+    initPlayers() {
+    // dplayer-float
+  
+    // dp1
+    this.dp = new DPlayer({
+        container: document.getElementById('dplayer'),
+        preload: 'none',
+        screenshot: true,
+        autoplay: false,
+        video: {
+            url: 'https://api.dogecloud.com/player/get.mp4?vcode=5ac682e6f8231991&userId=17&ext=.mp4',
+            pic: 'https://i.loli.net/2019/06/06/5cf8c5d9c57b510947.png',
+            thumbnails: 'https://i.loli.net/2019/06/06/5cf8c5d9cec8510758.jpg'
+        },
+        subtitle: {
+            // url: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.vtt',
+            url: [
+                {
+                    url: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.vtt',
+                    lang: 'zh-cn',
+                    name: '光',
+                },
+                {
+                    url: 'https://gist.githubusercontent.com/samdutton/ca37f3adaf4e23679957b8083e061177/raw/e19399fbccbc069a2af4266e5120ae6bad62699a/sample.vtt',
+                    lang: 'en-us',
+                    name: 'github',
+                },
+            ],
+            defaultSubtitle: 7,
+            type: 'webvtt',
+            fontSize: '25px',
+            bottom: '30%',
+            color: '#b7daff'
+        },
+        secondSubtitle: {
+        //  url: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.vtt',
+         url: [
+             {
+                 url: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.vtt',
+                 lang: 'zh-cn',
+                 name: '光',
+             },
+             {
+                 url: 'https://gist.githubusercontent.com/samdutton/ca37f3adaf4e23679957b8083e061177/raw/e19399fbccbc069a2af4266e5120ae6bad62699a/sample.vtt',
+                 lang: 'en-us',
+                 name: 'github',
+             },
+         ],
+         defaultSubtitle: 7,
+         type: 'webvtt',
+         fontSize: '25px',
+         bottom: '10%',
+         color: '#b7daff'
+     }
+    });
+},
+
     // 双击退出全屏
     handelDBClick() {
       if (!this.currentVideo) {
